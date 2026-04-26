@@ -2,8 +2,9 @@ param(
     [Parameter(Mandatory)]
     [string]$CatalogPath,
 
-    [Parameter(Mandatory)]
     [string[]]$AppIds,
+
+    [string]$AppIdsFile,
 
     [switch]$WhatIf
 )
@@ -12,6 +13,15 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $catalog = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath $CatalogPath), [System.Text.Encoding]::UTF8) | ConvertFrom-Json
+if (-not [string]::IsNullOrWhiteSpace($AppIdsFile)) {
+    $AppIds = @([System.IO.File]::ReadAllLines((Resolve-Path -LiteralPath $AppIdsFile), [System.Text.Encoding]::UTF8) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+}
+
+if (-not $AppIds -or $AppIds.Count -eq 0) {
+    Write-Host "No app ids selected."
+    exit 0
+}
+
 $apps = @($catalog.apps) | Where-Object { $AppIds -contains $_.id }
 $root = Split-Path -Parent (Split-Path -Parent (Resolve-Path -LiteralPath $CatalogPath))
 $downloadDir = Join-Path $root "downloads"

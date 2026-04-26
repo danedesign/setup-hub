@@ -11,6 +11,14 @@ Set-ExecutionPolicy -Scope Process Bypass -Force
 .\Start-SetupHub.ps1
 ```
 
+If the window closes unexpectedly, run the debug launcher instead:
+
+```powershell
+.\Start-SetupHub-Debug.ps1
+```
+
+It keeps the console open and writes logs under `logs\`.
+
 The first version reads `catalog\software.json`, lets you select apps, exports an install plan, and can run winget installs for selected winget-backed apps.
 
 Use `Check installed` in the GUI to turn it into a checklist. Apps with winget package IDs can be marked `Installed` or `Not installed`; manual and offline entries stay `Unknown` until specific detection rules are added.

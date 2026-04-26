@@ -133,6 +133,10 @@ $openConfigButton = $window.FindName("OpenConfigButton")
 $exportButton = $window.FindName("ExportButton")
 $dryRunButton = $window.FindName("DryRunButton")
 $installButton = $window.FindName("InstallButton")
+$logDir = Join-Path $Root "logs"
+if (-not (Test-Path -LiteralPath $logDir)) {
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+}
 
 $view = [System.Windows.Data.CollectionViewSource]::GetDefaultView($apps)
 $appList.ItemsSource = $view
@@ -345,6 +349,17 @@ function Export-Plan($selectedApps, [switch]$PreviewOnly) {
     return $planPath
 }
 
+function Write-SelectedAppIdsFile($selectedApps) {
+    $planDir = Join-Path $Root "output"
+    if (-not (Test-Path -LiteralPath $planDir)) {
+        [void](New-Item -ItemType Directory -Path $planDir)
+    }
+
+    $idsPath = Join-Path $planDir "selected-app-ids.txt"
+    @($selectedApps | ForEach-Object Id) | Set-Content -LiteralPath $idsPath -Encoding UTF8
+    return $idsPath
+}
+
 $searchBox.Add_TextChanged({ Apply-Filter })
 $categoryBox.Add_SelectionChanged({ Apply-Filter })
 $installStateBox.Add_SelectionChanged({ Apply-Filter })
@@ -462,21 +477,28 @@ $dryRunButton.Add_Click({
 })
 
 $installButton.Add_Click({
-    $selected = @(Get-SelectedApps)
-    if ($selected.Count -eq 0) {
-        [System.Windows.MessageBox]::Show("Select at least one app first.", "Setup Hub") | Out-Null
-        return
+    try {
+        $selected = @(Get-SelectedApps)
+        if ($selected.Count -eq 0) {
+            [System.Windows.MessageBox]::Show("Select at least one app first.", "Setup Hub") | Out-Null
+            return
+        }
+
+        $message = "Install or open {0} selected apps now?" -f $selected.Count
+        $result = [System.Windows.MessageBox]::Show($message, "Setup Hub", "YesNo", "Question")
+        if ($result -ne "Yes") { return }
+
+        $script = Join-Path $Root "scripts\Install-Apps.ps1"
+        $idsPath = Write-SelectedAppIdsFile $selected
+        & $script -CatalogPath $CatalogPath -AppIdsFile $idsPath
+        Refresh-InstallStates $selected
+        [System.Windows.MessageBox]::Show("Install command finished. Check the PowerShell window for details.", "Setup Hub") | Out-Null
     }
-
-    $message = "Install or open {0} selected apps now?" -f $selected.Count
-    $result = [System.Windows.MessageBox]::Show($message, "Setup Hub", "YesNo", "Question")
-    if ($result -ne "Yes") { return }
-
-    $script = Join-Path $Root "scripts\Install-Apps.ps1"
-    $ids = $selected.Id
-    & $script -CatalogPath $CatalogPath -AppIds $ids
-    Refresh-InstallStates $selected
-    [System.Windows.MessageBox]::Show("Install command finished. Check the PowerShell window for details.", "Setup Hub") | Out-Null
+    catch {
+        $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
+        $_ | Out-String | Set-Content -LiteralPath $errorPath -Encoding UTF8
+        [System.Windows.MessageBox]::Show(("Install failed. Error log saved to:`n{0}`n`n{1}" -f $errorPath, $_.Exception.Message), "Setup Hub") | Out-Null
+    }
 })
 
 foreach ($item in $apps) {
