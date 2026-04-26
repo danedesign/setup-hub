@@ -24,7 +24,7 @@ foreach ($app in @($catalog.apps | Sort-Object category, name)) {
         Type = $app.install.type
         Status = $app.status
         InstallState = "Unchecked"
-        PackageId = $app.install.packageId
+        Source = if (-not [string]::IsNullOrWhiteSpace($app.install.packageId)) { $app.install.packageId } elseif (-not [string]::IsNullOrWhiteSpace($app.install.url)) { $app.install.url } else { $app.install.installer }
         Description = $app.description
         Raw = $app
     })
@@ -78,7 +78,7 @@ $xaml = @"
               <GridViewColumn Header="Install" DisplayMemberBinding="{Binding Type}" Width="90"/>
               <GridViewColumn Header="Installed" DisplayMemberBinding="{Binding InstallState}" Width="100"/>
               <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="90"/>
-              <GridViewColumn Header="Package / Source" DisplayMemberBinding="{Binding PackageId}" Width="220"/>
+              <GridViewColumn Header="Package / Source" DisplayMemberBinding="{Binding Source}" Width="220"/>
             </GridView>
           </ListView.View>
         </ListView>
@@ -105,7 +105,7 @@ $xaml = @"
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
           <Button Name="ExportButton" Content="Export plan" Height="32" Padding="14,0" Margin="0,0,8,0"/>
           <Button Name="DryRunButton" Content="Preview commands" Height="32" Padding="14,0" Margin="0,0,8,0"/>
-          <Button Name="InstallButton" Content="Install selected winget apps" Height="32" Padding="14,0"/>
+          <Button Name="InstallButton" Content="Install / open selected" Height="32" Padding="14,0"/>
         </StackPanel>
       </DockPanel>
     </Border>
@@ -184,7 +184,7 @@ function Apply-Filter {
         param($item)
         $nameText = ([string]$item.Name).ToLowerInvariant()
         $categoryText = ([string]$item.Category).ToLowerInvariant()
-        $packageText = ([string]$item.PackageId).ToLowerInvariant()
+        $packageText = ([string]$item.Source).ToLowerInvariant()
         $matchesQuery = [string]::IsNullOrWhiteSpace($script:FilterQuery) -or
             $nameText.Contains($script:FilterQuery) -or
             $categoryText.Contains($script:FilterQuery) -or
@@ -261,7 +261,7 @@ function Resolve-ConfigPath([string]$path) {
 }
 
 function Test-AppInstalled($item) {
-    if ($item.Type -ne "winget" -or [string]::IsNullOrWhiteSpace($item.PackageId)) {
+    if ($item.Type -ne "winget" -or [string]::IsNullOrWhiteSpace($item.Raw.install.packageId)) {
         return "Unknown"
     }
 
@@ -270,8 +270,8 @@ function Test-AppInstalled($item) {
         return "Unknown"
     }
 
-    $output = & winget list --id $item.PackageId --exact --disable-interactivity 2>&1 | Out-String
-    if ($output -match [regex]::Escape($item.PackageId)) {
+    $output = & winget list --id $item.Raw.install.packageId --exact --disable-interactivity 2>&1 | Out-String
+    if ($output -match [regex]::Escape($item.Raw.install.packageId)) {
         return "Installed"
     }
 
@@ -312,18 +312,29 @@ function Export-Plan($selectedApps, [switch]$PreviewOnly) {
     }
     $planPath = Join-Path $planDir "install-plan.json"
     $selectedApps |
-        Select-Object Id, Name, Category, Type, Status, PackageId |
+        Select-Object Id, Name, Category, Type, Status, Source |
         ConvertTo-Json -Depth 5 |
         Set-Content -LiteralPath $planPath -Encoding UTF8
 
     if ($PreviewOnly) {
         $commands = foreach ($item in $selectedApps) {
             if ($item.Type -eq "winget") {
-                $command = "winget install --id {0} --exact --accept-package-agreements --accept-source-agreements" -f $item.PackageId
+                $command = "winget install --id {0} --exact --accept-package-agreements --accept-source-agreements" -f $item.Raw.install.packageId
                 if (-not [string]::IsNullOrWhiteSpace($item.Raw.install.scope)) {
                     $command += " --scope " + $item.Raw.install.scope
                 }
                 $command
+            }
+            elseif ($item.Type -eq "manual") {
+                if ($item.Raw.install.action -eq "download" -or $item.Raw.install.url -match '\.(exe|msi|msix|appx)(\?.*)?$') {
+                    "Download and run {0}" -f $item.Raw.install.url
+                }
+                else {
+                    "Open {0}" -f $item.Raw.install.url
+                }
+            }
+            elseif ($item.Type -eq "offline") {
+                "Run local installer {0}" -f $item.Raw.install.installer
             }
         }
         $commandPath = Join-Path $planDir "winget-preview.txt"
@@ -382,7 +393,7 @@ $appList.AddHandler(
             "Install" { "Type" }
             "Installed" { "InstallState" }
             "Status" { "Status" }
-            "Package / Source" { "PackageId" }
+            "Package / Source" { "Source" }
             default { $null }
         }
 
@@ -398,7 +409,7 @@ foreach ($column in $appList.View.Columns) {
         "Install" { "Type" }
         "Installed" { "InstallState" }
         "Status" { "Status" }
-        "Package / Source" { "PackageId" }
+        "Package / Source" { "Source" }
         default { $null }
     }
 
@@ -451,13 +462,13 @@ $dryRunButton.Add_Click({
 })
 
 $installButton.Add_Click({
-    $selected = @(Get-SelectedApps | Where-Object { $_.Type -eq "winget" })
+    $selected = @(Get-SelectedApps)
     if ($selected.Count -eq 0) {
-        [System.Windows.MessageBox]::Show("Select at least one winget app first.", "Setup Hub") | Out-Null
+        [System.Windows.MessageBox]::Show("Select at least one app first.", "Setup Hub") | Out-Null
         return
     }
 
-    $message = "Install {0} selected winget apps now?" -f $selected.Count
+    $message = "Install or open {0} selected apps now?" -f $selected.Count
     $result = [System.Windows.MessageBox]::Show($message, "Setup Hub", "YesNo", "Question")
     if ($result -ne "Yes") { return }
 

@@ -197,7 +197,7 @@
       "name": "iTunes",
       "category": "Apple",
       "description": "iTunes from Apple.com instead of Microsoft Store. Uses the direct Apple installer, with the Apple iTunes page as a fallback.",
-      "install": { "type": "manual", "url": "https://secure-appldnld.apple.com/itunes12/047-76416-20260302-fefe4356-211d-4da1-8bc4-058eb36ea803/iTunes64Setup.exe", "officialUrl": "https://www.apple.com/au/itunes/" },
+      "install": { "type": "manual", "action": "download", "url": "https://secure-appldnld.apple.com/itunes12/047-76416-20260302-fefe4356-211d-4da1-8bc4-058eb36ea803/iTunes64Setup.exe", "officialUrl": "https://www.apple.com/au/itunes/" },
       "status": "manual",
       "config": { "backup": true, "paths": [ "%AppData%\\Apple Computer\\iTunes" ] }
     },
@@ -206,7 +206,7 @@
       "name": "iCloud",
       "category": "Apple",
       "description": "iCloud from Apple.com instead of Microsoft Store. Uses the direct Apple installer.",
-      "install": { "type": "manual", "url": "http://updates-http.cdn-apple.com/2020/windows/001-39935-20200911-1A70AA56-F448-11EA-8CC0-99D41950005E/iCloudSetup.exe" },
+      "install": { "type": "manual", "action": "download", "url": "http://updates-http.cdn-apple.com/2020/windows/001-39935-20200911-1A70AA56-F448-11EA-8CC0-99D41950005E/iCloudSetup.exe" },
       "status": "manual",
       "config": { "backup": true, "paths": [ "%AppData%\\Apple Computer" ] }
     },
@@ -269,7 +269,7 @@
       "name": "Microsoft Visual Studio Installer",
       "category": "Developer",
       "description": "Visual Studio Community installer/bootstrapper, with the official downloads page as a fallback.",
-      "install": { "type": "manual", "url": "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=stable&version=VS18&source=VSLandingPage&cid=2500:ee1a5f72d6e74e7a9cce64f79af696ef", "officialUrl": "https://visualstudio.microsoft.com/downloads/" },
+      "install": { "type": "manual", "action": "download", "url": "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=stable&version=VS18&source=VSLandingPage&cid=2500:ee1a5f72d6e74e7a9cce64f79af696ef", "officialUrl": "https://visualstudio.microsoft.com/downloads/" },
       "status": "manual",
       "config": { "backup": false, "paths": [] }
     },

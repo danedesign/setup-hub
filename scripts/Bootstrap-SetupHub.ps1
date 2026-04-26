@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 
 # Edit these before publishing if you want the short IEX command to work.
 $DefaultRepo = "danedesign/setup-hub"
-$DefaultBranch = "main"
+$DefaultBranch = "master"
 $DefaultCreateStartMenuShortcut = $true
 
 if ([string]::IsNullOrWhiteSpace($Repo) -and $DefaultRepo -ne "OWNER/REPO") {
