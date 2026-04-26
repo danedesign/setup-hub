@@ -104,6 +104,7 @@ If the IEX command returns 404 or `Invoke-WebRequest : 404`, check:
 - The user prefers Chinese explanations.
 - Keep replies practical and not overly technical unless needed.
 - The user wants a commit message after every code change.
+- Keep this `AGENTS.md` file updated whenever a new feature, important implementation detail, known issue, workflow change, GitHub/bootstrap detail, or user preference is added.
 - If asked, commit locally when possible; if Git fails because of permissions or lock issues, provide exact commands and a commit message.
 - Do not remove user changes.
 - The user likes the idea of a polished but transparent tool, not necessarily a compiled EXE yet.
@@ -150,4 +151,3 @@ Check catalog summary:
 ```powershell
 .\Start-SetupHub.ps1 -NoGui
 ```
-
