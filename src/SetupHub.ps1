@@ -96,6 +96,18 @@ $xaml = @"
           <Button Name="OpenConfigButton" Content="Open config path" Height="28" Padding="10,0" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
         </DockPanel>
         <TextBox Name="ConfigPaths" MinHeight="90" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" BorderBrush="#D8DEE9"/>
+        <Separator Margin="0,14,0,12"/>
+        <TextBlock Text="Install queue" FontSize="14" FontWeight="SemiBold" Foreground="#17202A"/>
+        <ProgressBar Name="InstallProgress" Height="12" Minimum="0" Maximum="100" Margin="0,8,0,8"/>
+        <ListView Name="QueueList" MinHeight="90" MaxHeight="130" BorderBrush="#D8DEE9">
+          <ListView.View>
+            <GridView>
+              <GridViewColumn Header="App" DisplayMemberBinding="{Binding Name}" Width="190"/>
+              <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="110"/>
+            </GridView>
+          </ListView.View>
+        </ListView>
+        <TextBox Name="InstallLogBox" MinHeight="120" Margin="0,8,0,0" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" BorderBrush="#D8DEE9" FontFamily="Consolas"/>
       </StackPanel>
     </Border>
 
@@ -130,6 +142,9 @@ $detailMeta = $window.FindName("DetailMeta")
 $detailDescription = $window.FindName("DetailDescription")
 $configPaths = $window.FindName("ConfigPaths")
 $openConfigButton = $window.FindName("OpenConfigButton")
+$installProgress = $window.FindName("InstallProgress")
+$queueList = $window.FindName("QueueList")
+$installLogBox = $window.FindName("InstallLogBox")
 $exportButton = $window.FindName("ExportButton")
 $dryRunButton = $window.FindName("DryRunButton")
 $installButton = $window.FindName("InstallButton")
@@ -140,6 +155,8 @@ if (-not (Test-Path -LiteralPath $logDir)) {
 
 $view = [System.Windows.Data.CollectionViewSource]::GetDefaultView($apps)
 $appList.ItemsSource = $view
+$queueItems = New-Object System.Collections.ObjectModel.ObservableCollection[object]
+$queueList.ItemsSource = $queueItems
 $script:SortColumn = $null
 $script:SortDirection = [System.ComponentModel.ListSortDirection]::Ascending
 $script:FilterQuery = ""
@@ -360,6 +377,66 @@ function Write-SelectedAppIdsFile($selectedApps) {
     return $idsPath
 }
 
+function Append-InstallLog([string]$message) {
+    if ([string]::IsNullOrWhiteSpace($message)) { return }
+
+    $installLogBox.AppendText($message + [Environment]::NewLine)
+    $installLogBox.ScrollToEnd()
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+function Get-InstallActionText($item) {
+    if ($item.Type -eq "winget") {
+        $command = "winget install --id {0} --exact --accept-package-agreements --accept-source-agreements" -f $item.Raw.install.packageId
+        if (-not [string]::IsNullOrWhiteSpace($item.Raw.install.scope)) {
+            $command += " --scope " + $item.Raw.install.scope
+        }
+        return $command
+    }
+
+    if ($item.Type -eq "manual") {
+        if ($item.Raw.install.action -eq "download" -or $item.Raw.install.url -match '\.(exe|msi|msix|appx)(\?.*)?$') {
+            return "download and run " + $item.Raw.install.url
+        }
+        return "open " + $item.Raw.install.url
+    }
+
+    if ($item.Type -eq "offline") {
+        return "run local installer " + $item.Raw.install.installer
+    }
+
+    return "unknown install action"
+}
+
+function Invoke-InstallScriptForItem($item) {
+    $script = Join-Path $Root "scripts\Install-Apps.ps1"
+    $idsPath = Write-SelectedAppIdsFile @($item)
+
+    $command = "& '$script' -CatalogPath '$CatalogPath' -AppIdsFile '$idsPath' 2>&1"
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = "powershell.exe"
+    $startInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -Command `"$command`""
+    $startInfo.UseShellExecute = $false
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.CreateNoWindow = $true
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $startInfo
+
+    Append-InstallLog ("> " + (Get-InstallActionText $item))
+    [void]$process.Start()
+
+    while (-not $process.StandardOutput.EndOfStream) {
+        $line = $process.StandardOutput.ReadLine()
+        Append-InstallLog $line
+    }
+
+    $process.WaitForExit()
+    if ($process.ExitCode -ne 0) {
+        throw ("Install action failed for {0} with exit code {1}" -f $item.Name, $process.ExitCode)
+    }
+}
+
 $searchBox.Add_TextChanged({ Apply-Filter })
 $categoryBox.Add_SelectionChanged({ Apply-Filter })
 $installStateBox.Add_SelectionChanged({ Apply-Filter })
@@ -488,16 +565,54 @@ $installButton.Add_Click({
         $result = [System.Windows.MessageBox]::Show($message, "Setup Hub", "YesNo", "Question")
         if ($result -ne "Yes") { return }
 
-        $script = Join-Path $Root "scripts\Install-Apps.ps1"
-        $idsPath = Write-SelectedAppIdsFile $selected
-        & $script -CatalogPath $CatalogPath -AppIdsFile $idsPath
+        $installButton.IsEnabled = $false
+        $queueItems.Clear()
+        $installLogBox.Clear()
+        $installProgress.Value = 0
+
+        foreach ($item in $selected) {
+            $queueItems.Add([pscustomobject]@{
+                Id = $item.Id
+                Name = $item.Name
+                Status = "Queued"
+            })
+        }
+
+        $completed = 0
+        foreach ($item in $selected) {
+            $queueItem = @($queueItems | Where-Object { $_.Id -eq $item.Id })[0]
+            $queueItem.Status = "Running"
+            $queueList.Items.Refresh()
+            $statusText.Text = "Installing or opening: " + $item.Name
+            Append-InstallLog ("=== " + $item.Name + " ===")
+
+            try {
+                Invoke-InstallScriptForItem $item
+                $queueItem.Status = "Done"
+            }
+            catch {
+                $queueItem.Status = "Failed"
+                throw
+            }
+            finally {
+                $completed += 1
+                $installProgress.Value = [Math]::Round(($completed / $selected.Count) * 100, 0)
+                $queueList.Items.Refresh()
+                [System.Windows.Forms.Application]::DoEvents()
+            }
+        }
+
         Refresh-InstallStates $selected
         [System.Windows.MessageBox]::Show("Install command finished. Check the PowerShell window for details.", "Setup Hub") | Out-Null
     }
     catch {
         $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
-        $_ | Out-String | Set-Content -LiteralPath $errorPath -Encoding UTF8
+        (($installLogBox.Text + [Environment]::NewLine + ($_ | Out-String))) | Set-Content -LiteralPath $errorPath -Encoding UTF8
         [System.Windows.MessageBox]::Show(("Install failed. Error log saved to:`n{0}`n`n{1}" -f $errorPath, $_.Exception.Message), "Setup Hub") | Out-Null
+    }
+    finally {
+        $installButton.IsEnabled = $true
+        Update-Summary
     }
 })
 

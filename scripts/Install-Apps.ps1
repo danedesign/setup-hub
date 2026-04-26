@@ -102,7 +102,9 @@ foreach ($app in $apps) {
                 if (-not (Test-Path -LiteralPath $downloadDir)) {
                     New-Item -ItemType Directory -Path $downloadDir -Force | Out-Null
                 }
+                Write-Host ("Download {0} -> {1}" -f $app.install.url, $downloadPath)
                 Invoke-WebRequest -Uri $app.install.url -OutFile $downloadPath -UseBasicParsing
+                Write-Host ("Running installer: {0}" -f $downloadPath)
                 Start-Process -FilePath $downloadPath -Wait
             }
         }
@@ -112,6 +114,7 @@ foreach ($app in $apps) {
                 Write-Host ("Open {0}" -f $app.install.url)
             }
             else {
+                Write-Host ("Open {0}" -f $app.install.url)
                 Start-Process $app.install.url
             }
         }
@@ -135,6 +138,7 @@ foreach ($app in $apps) {
             Write-Host ("Run {0}" -f $installerPath)
         }
         else {
+            Write-Host ("Run {0}" -f $installerPath)
             Start-Process -FilePath $installerPath -Wait
         }
         continue
