@@ -621,9 +621,38 @@ function Start-NextInstallQueueItem {
     [void]$script:CurrentInstallProcess.Start()
 }
 
+function Read-SharedUtf8Text([string]$path) {
+    if (-not (Test-Path -LiteralPath $path)) { return $null }
+
+    try {
+        $stream = [System.IO.FileStream]::new(
+            $path,
+            [System.IO.FileMode]::Open,
+            [System.IO.FileAccess]::Read,
+            [System.IO.FileShare]::ReadWrite
+        )
+        try {
+            $reader = [System.IO.StreamReader]::new($stream, [System.Text.Encoding]::UTF8)
+            try {
+                return $reader.ReadToEnd()
+            }
+            finally {
+                $reader.Dispose()
+            }
+        }
+        finally {
+            $stream.Dispose()
+        }
+    }
+    catch [System.IO.IOException] {
+        return $null
+    }
+}
+
 function Update-InstallQueueFromTimer {
     if ($script:CurrentInstallLogPath -and (Test-Path -LiteralPath $script:CurrentInstallLogPath)) {
-        $text = [System.IO.File]::ReadAllText($script:CurrentInstallLogPath, [System.Text.Encoding]::UTF8)
+        $text = Read-SharedUtf8Text $script:CurrentInstallLogPath
+        if ($null -eq $text) { return }
         if ($text.Length -gt $script:CurrentInstallLogLength) {
             $newText = $text.Substring($script:CurrentInstallLogLength)
             $script:CurrentInstallLogLength = $text.Length
@@ -659,7 +688,14 @@ function Update-InstallQueueFromTimer {
 
 $script:InstallTimer = New-Object System.Windows.Threading.DispatcherTimer
 $script:InstallTimer.Interval = [TimeSpan]::FromMilliseconds(500)
-$script:InstallTimer.Add_Tick({ Update-InstallQueueFromTimer })
+$script:InstallTimer.Add_Tick({
+    try {
+        Update-InstallQueueFromTimer
+    }
+    catch {
+        Complete-InstallQueue $true $_.Exception.Message
+    }
+})
 
 $installButton.Add_Click({
     try {
