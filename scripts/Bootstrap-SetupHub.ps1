@@ -10,7 +10,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Edit these before publishing if you want the short IEX command to work.
-$DefaultRepo = "OWNER/REPO"
+$DefaultRepo = "danedesign/setup-hub"
 $DefaultBranch = "main"
 $DefaultCreateStartMenuShortcut = $true
 

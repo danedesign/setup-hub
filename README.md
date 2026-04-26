@@ -38,22 +38,22 @@ $DefaultRepo = "OWNER/REPO"
 with your GitHub repo, for example:
 
 ```powershell
-$DefaultRepo = "yourname/setup-hub"
+$DefaultRepo = "danedesign/setup-hub"
 ```
 
 Fast IEX pattern:
 
 ```powershell
-irm https://raw.githubusercontent.com/OWNER/REPO/main/scripts/Bootstrap-SetupHub.ps1 | iex
+irm https://raw.githubusercontent.com/danedesign/setup-hub/main/scripts/Bootstrap-SetupHub.ps1 | iex
 ```
 
 Safer inspectable pattern:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/OWNER/REPO/main/scripts/Bootstrap-SetupHub.ps1 -OutFile $env:TEMP\Bootstrap-SetupHub.ps1; & $env:TEMP\Bootstrap-SetupHub.ps1 -Repo OWNER/REPO -CreateStartMenuShortcut"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/danedesign/setup-hub/main/scripts/Bootstrap-SetupHub.ps1 -OutFile $env:TEMP\Bootstrap-SetupHub.ps1; & $env:TEMP\Bootstrap-SetupHub.ps1 -Repo danedesign/setup-hub -CreateStartMenuShortcut"
 ```
 
-Replace `OWNER/REPO` with your GitHub repo, for example `yourname/setup-hub`.
+The repo is configured as `danedesign/setup-hub`.
 
 The IEX pattern is shortest. The inspectable pattern downloads the bootstrap script first, then runs it locally, which is easier to inspect and debug.
 
