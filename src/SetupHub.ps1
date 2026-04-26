@@ -408,71 +408,6 @@ function Get-InstallActionText($item) {
     return "unknown install action"
 }
 
-function Invoke-InstallScriptForItem($item) {
-    $script = Join-Path $Root "scripts\Install-Apps.ps1"
-    $idsPath = Write-SelectedAppIdsFile @($item)
-
-    $command = "& '$script' -CatalogPath '$CatalogPath' -AppIdsFile '$idsPath' 2>&1"
-    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $startInfo.FileName = "powershell.exe"
-    $startInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -Command `"$command`""
-    $startInfo.UseShellExecute = $false
-    $startInfo.RedirectStandardOutput = $true
-    $startInfo.CreateNoWindow = $true
-
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = $startInfo
-
-    Append-InstallLog ("> " + (Get-InstallActionText $item))
-    [void]$process.Start()
-
-    while (-not $process.StandardOutput.EndOfStream) {
-        $line = $process.StandardOutput.ReadLine()
-        Append-InstallLog $line
-    }
-
-    $process.WaitForExit()
-    if ($process.ExitCode -ne 0) {
-        throw ("Install action failed for {0} with exit code {1}" -f $item.Name, $process.ExitCode)
-    }
-}
-
-function Invoke-InstallScriptForItemWorker($item, $worker) {
-    $script = Join-Path $Root "scripts\Install-Apps.ps1"
-    $idsPath = Write-SelectedAppIdsFile @($item)
-
-    $command = "& '$script' -CatalogPath '$CatalogPath' -AppIdsFile '$idsPath' 2>&1"
-    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $startInfo.FileName = "powershell.exe"
-    $startInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -Command `"$command`""
-    $startInfo.UseShellExecute = $false
-    $startInfo.RedirectStandardOutput = $true
-    $startInfo.CreateNoWindow = $true
-
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = $startInfo
-
-    $worker.ReportProgress(0, [pscustomobject]@{
-        Type = "log"
-        Message = "> " + (Get-InstallActionText $item)
-    })
-
-    [void]$process.Start()
-
-    while (-not $process.StandardOutput.EndOfStream) {
-        $line = $process.StandardOutput.ReadLine()
-        $worker.ReportProgress(0, [pscustomobject]@{
-            Type = "log"
-            Message = $line
-        })
-    }
-
-    $process.WaitForExit()
-    if ($process.ExitCode -ne 0) {
-        throw ("Install action failed for {0} with exit code {1}" -f $item.Name, $process.ExitCode)
-    }
-}
-
 $searchBox.Add_TextChanged({ Apply-Filter })
 $categoryBox.Add_SelectionChanged({ Apply-Filter })
 $installStateBox.Add_SelectionChanged({ Apply-Filter })
@@ -589,6 +524,121 @@ $dryRunButton.Add_Click({
     [System.Windows.MessageBox]::Show("Preview exported to $path", "Setup Hub") | Out-Null
 })
 
+$script:InstallQueue = @()
+$script:InstallQueueIndex = 0
+$script:CurrentInstallProcess = $null
+$script:CurrentInstallLogPath = $null
+$script:CurrentInstallLogLength = 0
+$script:CurrentQueueItem = $null
+
+function Complete-InstallQueue([bool]$failed, [string]$message) {
+    if ($script:InstallTimer) {
+        $script:InstallTimer.Stop()
+    }
+
+    $script:CurrentInstallProcess = $null
+    $script:CurrentInstallLogPath = $null
+    $script:CurrentInstallLogLength = 0
+    $script:CurrentQueueItem = $null
+
+    $installButton.IsEnabled = $true
+    $checkInstalledButton.IsEnabled = $true
+    Update-Summary
+
+    if ($failed) {
+        $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
+        $installLogBox.Text | Set-Content -LiteralPath $errorPath -Encoding UTF8
+        [System.Windows.MessageBox]::Show(("Install failed. Error log saved to:`n{0}`n`n{1}" -f $errorPath, $message), "Setup Hub") | Out-Null
+        return
+    }
+
+    $installProgress.Value = 100
+    $statusText.Text = "Install queue finished."
+    [System.Windows.MessageBox]::Show("Install queue finished.", "Setup Hub") | Out-Null
+}
+
+function Start-NextInstallQueueItem {
+    if ($script:InstallQueueIndex -ge $script:InstallQueue.Count) {
+        Complete-InstallQueue $false ""
+        return
+    }
+
+    $item = $script:InstallQueue[$script:InstallQueueIndex]
+    $script:CurrentQueueItem = @($queueItems | Where-Object { $_.Id -eq $item.Id })[0]
+    if ($script:CurrentQueueItem) {
+        $script:CurrentQueueItem.Status = "Running"
+        $queueList.Items.Refresh()
+    }
+
+    $statusText.Text = "Installing or opening: " + $item.Name
+    Append-InstallLog ("=== " + $item.Name + " ===")
+    Append-InstallLog ("> " + (Get-InstallActionText $item))
+
+    $idsPath = Write-SelectedAppIdsFile @($item)
+    $script:CurrentInstallLogPath = Join-Path $logDir ("install-" + (Get-Date -Format "yyyyMMdd-HHmmss") + "-" + $item.Id + ".log")
+    $script:CurrentInstallLogLength = 0
+    $runnerPath = Join-Path $logDir ("run-install-" + [guid]::NewGuid().ToString("N") + ".ps1")
+    $installScript = Join-Path $Root "scripts\Install-Apps.ps1"
+
+    @(
+        '$ErrorActionPreference = "Stop"'
+        '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8'
+        '& "' + $installScript + '" -CatalogPath "' + $CatalogPath + '" -AppIdsFile "' + $idsPath + '" *>&1 | Tee-Object -FilePath "' + $script:CurrentInstallLogPath + '"'
+        'if ($LASTEXITCODE -ne $null) { exit $LASTEXITCODE }'
+    ) | Set-Content -LiteralPath $runnerPath -Encoding UTF8
+
+    $powershellPath = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = $powershellPath
+    $startInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$runnerPath`""
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+
+    $script:CurrentInstallProcess = New-Object System.Diagnostics.Process
+    $script:CurrentInstallProcess.StartInfo = $startInfo
+    [void]$script:CurrentInstallProcess.Start()
+}
+
+function Update-InstallQueueFromTimer {
+    if ($script:CurrentInstallLogPath -and (Test-Path -LiteralPath $script:CurrentInstallLogPath)) {
+        $text = [System.IO.File]::ReadAllText($script:CurrentInstallLogPath, [System.Text.Encoding]::UTF8)
+        if ($text.Length -gt $script:CurrentInstallLogLength) {
+            $newText = $text.Substring($script:CurrentInstallLogLength)
+            $script:CurrentInstallLogLength = $text.Length
+            $installLogBox.AppendText($newText)
+            if (-not $newText.EndsWith([Environment]::NewLine)) {
+                $installLogBox.AppendText([Environment]::NewLine)
+            }
+            $installLogBox.ScrollToEnd()
+        }
+    }
+
+    if (-not $script:CurrentInstallProcess) { return }
+    if (-not $script:CurrentInstallProcess.HasExited) { return }
+
+    $exitCode = $script:CurrentInstallProcess.ExitCode
+    if ($exitCode -eq 0) {
+        if ($script:CurrentQueueItem) {
+            $script:CurrentQueueItem.Status = "Done"
+            $queueList.Items.Refresh()
+        }
+        $script:InstallQueueIndex += 1
+        $installProgress.Value = [Math]::Round(($script:InstallQueueIndex / $script:InstallQueue.Count) * 100, 0)
+        Start-NextInstallQueueItem
+        return
+    }
+
+    if ($script:CurrentQueueItem) {
+        $script:CurrentQueueItem.Status = "Failed"
+        $queueList.Items.Refresh()
+    }
+    Complete-InstallQueue $true ("Install action failed with exit code " + $exitCode)
+}
+
+$script:InstallTimer = New-Object System.Windows.Threading.DispatcherTimer
+$script:InstallTimer.Interval = [TimeSpan]::FromMilliseconds(500)
+$script:InstallTimer.Add_Tick({ Update-InstallQueueFromTimer })
+
 $installButton.Add_Click({
     try {
         $selected = @(Get-SelectedApps)
@@ -615,99 +665,14 @@ $installButton.Add_Click({
             })
         }
 
-        $worker = New-Object System.ComponentModel.BackgroundWorker
-        $worker.WorkerReportsProgress = $true
-
-        $worker.Add_DoWork({
-            param($sender, $eventArgs)
-
-            $items = @($eventArgs.Argument)
-            $completed = 0
-
-            foreach ($item in $items) {
-                $sender.ReportProgress(
-                    [Math]::Round(($completed / $items.Count) * 100, 0),
-                    [pscustomobject]@{
-                        Type = "status"
-                        Id = $item.Id
-                        Status = "Running"
-                        Message = "Installing or opening: " + $item.Name
-                    }
-                )
-                $sender.ReportProgress(0, [pscustomobject]@{
-                    Type = "log"
-                    Message = "=== " + $item.Name + " ==="
-                })
-
-                try {
-                    Invoke-InstallScriptForItemWorker $item $sender
-                    $completed += 1
-                    $sender.ReportProgress(
-                        [Math]::Round(($completed / $items.Count) * 100, 0),
-                        [pscustomobject]@{
-                            Type = "status"
-                            Id = $item.Id
-                            Status = "Done"
-                            Message = "Done: " + $item.Name
-                        }
-                    )
-                }
-                catch {
-                    $sender.ReportProgress(
-                        [Math]::Round(($completed / $items.Count) * 100, 0),
-                        [pscustomobject]@{
-                            Type = "status"
-                            Id = $item.Id
-                            Status = "Failed"
-                            Message = "Failed: " + $item.Name
-                        }
-                    )
-                    throw
-                }
-            }
-        })
-
-        $worker.Add_ProgressChanged({
-            param($sender, $eventArgs)
-
-            $installProgress.Value = $eventArgs.ProgressPercentage
-            $update = $eventArgs.UserState
-
-            if ($update.Type -eq "log") {
-                Append-InstallLog $update.Message
-                return
-            }
-
-            if ($update.Type -eq "status") {
-                $queueItem = @($queueItems | Where-Object { $_.Id -eq $update.Id })[0]
-                if ($queueItem) {
-                    $queueItem.Status = $update.Status
-                    $queueList.Items.Refresh()
-                }
-                $statusText.Text = $update.Message
-            }
-        })
-
-        $worker.Add_RunWorkerCompleted({
-            param($sender, $eventArgs)
-
-            $installButton.IsEnabled = $true
-            $checkInstalledButton.IsEnabled = $true
-            Update-Summary
-
-            if ($eventArgs.Error) {
-                $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
-                (($installLogBox.Text + [Environment]::NewLine + ($eventArgs.Error | Out-String))) | Set-Content -LiteralPath $errorPath -Encoding UTF8
-                [System.Windows.MessageBox]::Show(("Install failed. Error log saved to:`n{0}`n`n{1}" -f $errorPath, $eventArgs.Error.Message), "Setup Hub") | Out-Null
-                return
-            }
-
-            $installProgress.Value = 100
-            $statusText.Text = "Install queue finished."
-            [System.Windows.MessageBox]::Show("Install queue finished.", "Setup Hub") | Out-Null
-        })
-
-        $worker.RunWorkerAsync($selected)
+        $script:InstallQueue = $selected
+        $script:InstallQueueIndex = 0
+        $script:CurrentInstallProcess = $null
+        $script:CurrentInstallLogPath = $null
+        $script:CurrentInstallLogLength = 0
+        $script:CurrentQueueItem = $null
+        Start-NextInstallQueueItem
+        $script:InstallTimer.Start()
     }
     catch {
         $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
