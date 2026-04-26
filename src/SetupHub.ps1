@@ -91,6 +91,7 @@ $xaml = @"
         <TextBlock Name="DetailMeta" FontSize="13" Foreground="#5D6D7E" Margin="0,8,0,0" TextWrapping="Wrap"/>
         <Separator Margin="0,12,0,12"/>
         <TextBlock Name="DetailDescription" FontSize="14" Foreground="#273746" TextWrapping="Wrap"/>
+        <Button Name="OpenOfficialButton" Content="Open official site" Height="30" Padding="10,0" HorizontalAlignment="Left" Margin="0,14,0,0"/>
         <DockPanel Margin="0,18,0,6">
           <TextBlock Text="Config paths" FontSize="14" FontWeight="SemiBold" Foreground="#17202A" VerticalAlignment="Center"/>
           <Button Name="OpenConfigButton" Content="Open config path" Height="28" Padding="10,0" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
@@ -141,6 +142,7 @@ $detailName = $window.FindName("DetailName")
 $detailMeta = $window.FindName("DetailMeta")
 $detailDescription = $window.FindName("DetailDescription")
 $configPaths = $window.FindName("ConfigPaths")
+$openOfficialButton = $window.FindName("OpenOfficialButton")
 $openConfigButton = $window.FindName("OpenConfigButton")
 $installProgress = $window.FindName("InstallProgress")
 $queueList = $window.FindName("QueueList")
@@ -412,6 +414,26 @@ $searchBox.Add_TextChanged({ Apply-Filter })
 $categoryBox.Add_SelectionChanged({ Apply-Filter })
 $installStateBox.Add_SelectionChanged({ Apply-Filter })
 $appList.Add_SelectionChanged({ Show-AppDetail $appList.SelectedItem })
+
+$openOfficialButton.Add_Click({
+    $item = $appList.SelectedItem
+    if (-not $item) {
+        [System.Windows.MessageBox]::Show("Select an app first.", "Setup Hub") | Out-Null
+        return
+    }
+
+    $url = $item.Raw.install.officialUrl
+    if ([string]::IsNullOrWhiteSpace($url)) {
+        $url = $item.Raw.install.url
+    }
+
+    if ([string]::IsNullOrWhiteSpace($url)) {
+        [System.Windows.MessageBox]::Show("No official site or download page is saved for this app yet.", "Setup Hub") | Out-Null
+        return
+    }
+
+    Start-Process $url
+})
 
 $openConfigButton.Add_Click({
     $item = $appList.SelectedItem

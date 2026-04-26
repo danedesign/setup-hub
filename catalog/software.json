@@ -1,4 +1,4 @@
-{
+﻿{
   "schemaVersion": 1,
   "name": "Personal Windows Setup Catalog",
   "updated": "2026-04-25",
@@ -8,531 +8,998 @@
       "name": "3uTools",
       "category": "Mobile",
       "description": "iOS device management and utility toolkit.",
-      "install": { "type": "winget", "packageId": "3uTools.3uTools" },
+      "install": {
+        "type": "winget",
+        "packageId": "3uTools.3uTools",
+        "officialUrl": "https://www.3u.com/"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "7zip",
       "name": "7-Zip",
       "category": "Utilities",
       "description": "Lightweight archive manager.",
-      "install": { "type": "winget", "packageId": "7zip.7zip" },
+      "install": {
+        "type": "winget",
+        "packageId": "7zip.7zip",
+        "officialUrl": "https://www.7-zip.org/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "adobe-acrobat-dc",
       "name": "Adobe Acrobat DC",
       "category": "Documents",
       "description": "PDF viewing and editing. Exact Acrobat DC edition/source should be confirmed.",
-      "install": { "type": "manual", "url": "https://www.adobe.com/acrobat.html" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.adobe.com/acrobat.html",
+        "officialUrl": "https://www.adobe.com/acrobat.html"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "after-effects-cc-2019",
       "name": "Adobe After Effects CC 2019",
       "category": "Creative",
       "description": "Version-pinned Adobe video effects app. Keep this as offline/manual to preserve the exact 2019 version.",
-      "install": { "type": "offline", "installer": "installers\\Adobe\\AfterEffects_CC_2019\\setup.exe", "silentArgs": "" },
+      "install": {
+        "type": "offline",
+        "installer": "installers\\Adobe\\AfterEffects_CC_2019\\setup.exe",
+        "silentArgs": "",
+        "officialUrl": "https://www.adobe.com/products/aftereffects.html"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "photoshop-cc-2019",
       "name": "Adobe Photoshop CC 2019",
       "category": "Creative",
       "description": "Version-pinned Adobe image editor. Keep this as offline/manual to preserve the exact 2019 version.",
-      "install": { "type": "offline", "installer": "installers\\Adobe\\Photoshop_CC_2019\\setup.exe", "silentArgs": "" },
+      "install": {
+        "type": "offline",
+        "installer": "installers\\Adobe\\Photoshop_CC_2019\\setup.exe",
+        "silentArgs": "",
+        "officialUrl": "https://www.adobe.com/products/photoshop.html"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "premiere-pro-2020",
       "name": "Adobe Premiere Pro 2020",
       "category": "Creative",
       "description": "Version-pinned Adobe video editor. Keep this as offline/manual to preserve the exact 2020 version.",
-      "install": { "type": "offline", "installer": "installers\\Adobe\\Premiere_Pro_2020\\setup.exe", "silentArgs": "" },
+      "install": {
+        "type": "offline",
+        "installer": "installers\\Adobe\\Premiere_Pro_2020\\setup.exe",
+        "silentArgs": "",
+        "officialUrl": "https://www.adobe.com/products/premiere.html"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "affinity-designer-2",
       "name": "Affinity Designer 2",
       "category": "Creative",
       "description": "Vector design and illustration app.",
-      "install": { "type": "winget", "packageId": "Serif.AffinityDesigner2" },
+      "install": {
+        "type": "winget",
+        "packageId": "Serif.AffinityDesigner2",
+        "officialUrl": "https://affinity.serif.com/designer/"
+      },
       "status": "verify",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "affinity-photo-2",
       "name": "Affinity Photo 2",
       "category": "Creative",
       "description": "Raster photo editing app.",
-      "install": { "type": "winget", "packageId": "Serif.AffinityPhoto2" },
+      "install": {
+        "type": "winget",
+        "packageId": "Serif.AffinityPhoto2",
+        "officialUrl": "https://affinity.serif.com/photo/"
+      },
       "status": "verify",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "ant-renamer",
       "name": "Ant Renamer",
       "category": "Utilities",
       "description": "Batch file renaming utility.",
-      "install": { "type": "winget", "packageId": "AntRenamer.AntRenamer" },
+      "install": {
+        "type": "winget",
+        "packageId": "AntRenamer.AntRenamer",
+        "officialUrl": "https://antp.be/software/renamer"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "apollo",
       "name": "Apollo",
       "category": "Gaming",
       "description": "ClassicOldSong Apollo, a Sunshine fork for game streaming.",
-      "install": { "type": "manual", "url": "https://github.com/ClassicOldSong/Apollo" },
+      "install": {
+        "type": "manual",
+        "url": "https://github.com/ClassicOldSong/Apollo",
+        "officialUrl": "https://github.com/ClassicOldSong/Apollo"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "audacity",
       "name": "Audacity",
       "category": "Audio",
       "description": "Audio recording and editing.",
-      "install": { "type": "winget", "packageId": "Audacity.Audacity" },
+      "install": {
+        "type": "winget",
+        "packageId": "Audacity.Audacity",
+        "officialUrl": "https://www.audacityteam.org/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\audacity" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\audacity"
+        ]
+      }
     },
     {
       "id": "blender",
       "name": "Blender",
       "category": "3D",
       "description": "3D creation suite.",
-      "install": { "type": "winget", "packageId": "BlenderFoundation.Blender" },
+      "install": {
+        "type": "winget",
+        "packageId": "BlenderFoundation.Blender",
+        "officialUrl": "https://www.blender.org/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Blender Foundation\\Blender" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Blender Foundation\\Blender"
+        ]
+      }
     },
     {
       "id": "everything",
       "name": "Everything",
       "category": "Utilities",
       "description": "Fast local file search.",
-      "install": { "type": "winget", "packageId": "voidtools.Everything" },
+      "install": {
+        "type": "winget",
+        "packageId": "voidtools.Everything",
+        "officialUrl": "https://www.voidtools.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Everything" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Everything"
+        ]
+      }
     },
     {
       "id": "f3d",
       "name": "F3D",
       "category": "3D",
       "description": "Fast and minimalist 3D viewer.",
-      "install": { "type": "winget", "packageId": "f3d-app.f3d" },
+      "install": {
+        "type": "winget",
+        "packageId": "f3d-app.f3d",
+        "officialUrl": "https://f3d.app/"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "fastcopy",
       "name": "FastCopy",
       "category": "Utilities",
       "description": "High-speed file copy and sync utility.",
-      "install": { "type": "winget", "packageId": "FastCopy.FastCopy" },
+      "install": {
+        "type": "winget",
+        "packageId": "FastCopy.FastCopy",
+        "officialUrl": "https://fastcopy.jp/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "figma",
       "name": "Figma",
       "category": "Design",
       "description": "Design and collaboration app.",
-      "install": { "type": "winget", "packageId": "Figma.Figma" },
+      "install": {
+        "type": "winget",
+        "packageId": "Figma.Figma",
+        "officialUrl": "https://www.figma.com/downloads/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "file-converter",
       "name": "File Converter",
       "category": "Utilities",
       "description": "Context-menu file conversion tool.",
-      "install": { "type": "winget", "packageId": "FileConverter.FileConverter" },
+      "install": {
+        "type": "winget",
+        "packageId": "FileConverter.FileConverter",
+        "officialUrl": "https://file-converter.io/"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "foobar2000",
       "name": "foobar2000",
       "category": "Audio",
       "description": "Advanced audio player.",
-      "install": { "type": "winget", "packageId": "PeterPawlowski.foobar2000" },
+      "install": {
+        "type": "winget",
+        "packageId": "PeterPawlowski.foobar2000",
+        "officialUrl": "https://www.foobar2000.org/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\foobar2000" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\foobar2000"
+        ]
+      }
     },
     {
       "id": "freefilesync",
       "name": "FreeFileSync",
       "category": "Utilities",
       "description": "Folder comparison and synchronization.",
-      "install": { "type": "winget", "packageId": "FreeFileSync.FreeFileSync" },
+      "install": {
+        "type": "winget",
+        "packageId": "FreeFileSync.FreeFileSync",
+        "officialUrl": "https://freefilesync.org/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\FreeFileSync" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\FreeFileSync"
+        ]
+      }
     },
     {
       "id": "git",
       "name": "Git",
       "category": "Developer",
       "description": "Version control system.",
-      "install": { "type": "winget", "packageId": "Git.Git" },
+      "install": {
+        "type": "winget",
+        "packageId": "Git.Git",
+        "officialUrl": "https://git-scm.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%UserProfile%\\.gitconfig", "%UserProfile%\\.ssh" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%UserProfile%\\.gitconfig",
+          "%UserProfile%\\.ssh"
+        ]
+      }
     },
     {
       "id": "chrome",
       "name": "Google Chrome",
       "category": "Browser",
       "description": "Google web browser.",
-      "install": { "type": "winget", "packageId": "Google.Chrome" },
+      "install": {
+        "type": "winget",
+        "packageId": "Google.Chrome",
+        "officialUrl": "https://www.google.com/chrome/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "itunes-apple",
       "name": "iTunes",
       "category": "Apple",
       "description": "iTunes from Apple.com instead of Microsoft Store. Uses the direct Apple installer, with the Apple iTunes page as a fallback.",
-      "install": { "type": "manual", "action": "download", "url": "https://secure-appldnld.apple.com/itunes12/047-76416-20260302-fefe4356-211d-4da1-8bc4-058eb36ea803/iTunes64Setup.exe", "officialUrl": "https://www.apple.com/au/itunes/" },
+      "install": {
+        "type": "manual",
+        "action": "download",
+        "url": "https://secure-appldnld.apple.com/itunes12/047-76416-20260302-fefe4356-211d-4da1-8bc4-058eb36ea803/iTunes64Setup.exe",
+        "officialUrl": "https://www.apple.com/au/itunes/"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [ "%AppData%\\Apple Computer\\iTunes" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Apple Computer\\iTunes"
+        ]
+      }
     },
     {
       "id": "icloud-apple",
       "name": "iCloud",
       "category": "Apple",
       "description": "iCloud from Apple.com instead of Microsoft Store. Uses the direct Apple installer.",
-      "install": { "type": "manual", "action": "download", "url": "http://updates-http.cdn-apple.com/2020/windows/001-39935-20200911-1A70AA56-F448-11EA-8CC0-99D41950005E/iCloudSetup.exe" },
+      "install": {
+        "type": "manual",
+        "action": "download",
+        "url": "http://updates-http.cdn-apple.com/2020/windows/001-39935-20200911-1A70AA56-F448-11EA-8CC0-99D41950005E/iCloudSetup.exe",
+        "officialUrl": "https://support.apple.com/icloud"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [ "%AppData%\\Apple Computer" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Apple Computer"
+        ]
+      }
     },
     {
       "id": "localsend",
       "name": "LocalSend",
       "category": "Utilities",
       "description": "Local network file sharing.",
-      "install": { "type": "winget", "packageId": "LocalSend.LocalSend" },
+      "install": {
+        "type": "winget",
+        "packageId": "LocalSend.LocalSend",
+        "officialUrl": "https://localsend.org/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "microsoft-365-business",
       "name": "Microsoft 365 Apps for business",
       "category": "Office",
       "description": "Office apps for Microsoft 365 business accounts.",
-      "install": { "type": "manual", "url": "https://www.microsoft.com/microsoft-365/business" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.microsoft.com/microsoft-365/business",
+        "officialUrl": "https://www.microsoft.com/microsoft-365/business"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "dotnet-framework-4",
       "name": "Microsoft .NET Framework 4",
       "category": "Runtime",
       "description": ".NET Framework 4 runtime/developer pack. Often already present on modern Windows.",
-      "install": { "type": "winget", "packageId": "Microsoft.DotNet.Framework.DeveloperPack_4" },
+      "install": {
+        "type": "winget",
+        "packageId": "Microsoft.DotNet.Framework.DeveloperPack_4",
+        "officialUrl": "https://dotnet.microsoft.com/download/dotnet-framework"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "dotnet-sdk",
       "name": ".NET SDK",
       "category": "Developer",
       "description": "Microsoft .NET SDK.",
-      "install": { "type": "winget", "packageId": "Microsoft.DotNet.SDK.8" },
+      "install": {
+        "type": "winget",
+        "packageId": "Microsoft.DotNet.SDK.8",
+        "officialUrl": "https://dotnet.microsoft.com/download"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "teams",
       "name": "Microsoft Teams",
       "category": "Communication",
       "description": "Microsoft Teams desktop client.",
-      "install": { "type": "winget", "packageId": "Microsoft.Teams" },
+      "install": {
+        "type": "winget",
+        "packageId": "Microsoft.Teams",
+        "officialUrl": "https://www.microsoft.com/microsoft-teams/download-app"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "vscode",
       "name": "Microsoft Visual Studio Code",
       "category": "Developer",
       "description": "Code editor.",
-      "install": { "type": "winget", "packageId": "Microsoft.VisualStudioCode" },
+      "install": {
+        "type": "winget",
+        "packageId": "Microsoft.VisualStudioCode",
+        "officialUrl": "https://code.visualstudio.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Code\\User", "%UserProfile%\\.vscode\\extensions" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Code\\User",
+          "%UserProfile%\\.vscode\\extensions"
+        ]
+      }
     },
     {
       "id": "visual-studio-installer",
       "name": "Microsoft Visual Studio Installer",
       "category": "Developer",
       "description": "Visual Studio Community installer/bootstrapper, with the official downloads page as a fallback.",
-      "install": { "type": "manual", "action": "download", "url": "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=stable&version=VS18&source=VSLandingPage&cid=2500:ee1a5f72d6e74e7a9cce64f79af696ef", "officialUrl": "https://visualstudio.microsoft.com/downloads/" },
+      "install": {
+        "type": "manual",
+        "action": "download",
+        "url": "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=stable&version=VS18&source=VSLandingPage&cid=2500:ee1a5f72d6e74e7a9cce64f79af696ef",
+        "officialUrl": "https://visualstudio.microsoft.com/downloads/"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "moonlight",
       "name": "Moonlight Game Streaming Client",
       "category": "Gaming",
       "description": "Game streaming client.",
-      "install": { "type": "winget", "packageId": "MoonlightGameStreamingProject.Moonlight" },
+      "install": {
+        "type": "winget",
+        "packageId": "MoonlightGameStreamingProject.Moonlight",
+        "officialUrl": "https://moonlight-stream.org/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "obs-studio",
       "name": "OBS Studio",
       "category": "Media",
       "description": "Recording and live streaming.",
-      "install": { "type": "winget", "packageId": "OBSProject.OBSStudio" },
+      "install": {
+        "type": "winget",
+        "packageId": "OBSProject.OBSStudio",
+        "officialUrl": "https://obsproject.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\obs-studio" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\obs-studio"
+        ]
+      }
     },
     {
       "id": "obsidian",
       "name": "Obsidian",
       "category": "Notes",
       "description": "Markdown knowledge base.",
-      "install": { "type": "winget", "packageId": "Obsidian.Obsidian" },
+      "install": {
+        "type": "winget",
+        "packageId": "Obsidian.Obsidian",
+        "officialUrl": "https://obsidian.md/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Obsidian" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Obsidian"
+        ]
+      }
     },
     {
       "id": "parsec",
       "name": "Parsec",
       "category": "Remote",
       "description": "Low-latency remote desktop and game streaming.",
-      "install": { "type": "winget", "packageId": "Parsec.Parsec" },
+      "install": {
+        "type": "winget",
+        "packageId": "Parsec.Parsec",
+        "officialUrl": "https://parsec.app/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "powertoys",
       "name": "PowerToys",
       "category": "Utilities",
       "description": "Microsoft power-user utilities.",
-      "install": { "type": "winget", "packageId": "Microsoft.PowerToys" },
+      "install": {
+        "type": "winget",
+        "packageId": "Microsoft.PowerToys",
+        "officialUrl": "https://learn.microsoft.com/windows/powertoys/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%LocalAppData%\\Microsoft\\PowerToys" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%LocalAppData%\\Microsoft\\PowerToys"
+        ]
+      }
     },
     {
       "id": "quicklook",
       "name": "QuickLook",
       "category": "Utilities",
       "description": "Spacebar file preview.",
-      "install": { "type": "winget", "packageId": "QL-Win.QuickLook" },
+      "install": {
+        "type": "winget",
+        "packageId": "QL-Win.QuickLook",
+        "officialUrl": "https://github.com/QL-Win/QuickLook"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "raidrive",
       "name": "RaiDrive Mount",
       "category": "Storage",
       "description": "Mount cloud storage as drives.",
-      "install": { "type": "winget", "packageId": "OpenBoxLab.RaiDrive" },
+      "install": {
+        "type": "winget",
+        "packageId": "OpenBoxLab.RaiDrive",
+        "officialUrl": "https://www.raidrive.com/"
+      },
       "status": "verify",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "raycast",
       "name": "Raycast",
       "category": "Launcher",
       "description": "Productivity launcher. Windows availability/source needs confirmation.",
-      "install": { "type": "manual", "url": "https://www.raycast.com/" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.raycast.com/",
+        "officialUrl": "https://www.raycast.com/"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "reaper",
       "name": "REAPER",
       "category": "Audio",
       "description": "Digital audio workstation.",
-      "install": { "type": "winget", "packageId": "Cockos.REAPER" },
+      "install": {
+        "type": "winget",
+        "packageId": "Cockos.REAPER",
+        "officialUrl": "https://www.reaper.fm/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\REAPER" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\REAPER"
+        ]
+      }
     },
     {
       "id": "rufus",
       "name": "Rufus",
       "category": "Utilities",
       "description": "Bootable USB creation tool.",
-      "install": { "type": "winget", "packageId": "Rufus.Rufus" },
+      "install": {
+        "type": "winget",
+        "packageId": "Rufus.Rufus",
+        "officialUrl": "https://rufus.ie/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "sourcetree",
       "name": "SourceTree",
       "category": "Developer",
       "description": "Git desktop client.",
-      "install": { "type": "winget", "packageId": "Atlassian.Sourcetree" },
+      "install": {
+        "type": "winget",
+        "packageId": "Atlassian.Sourcetree",
+        "officialUrl": "https://www.sourcetreeapp.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%LocalAppData%\\Atlassian\\SourceTree" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%LocalAppData%\\Atlassian\\SourceTree"
+        ]
+      }
     },
     {
       "id": "startisback",
       "name": "StartAllBack (StartIsBack++)",
       "category": "System",
       "description": "Windows Start menu and taskbar customization. Installed through the StartAllBack winget package.",
-      "install": { "type": "winget", "packageId": "StartIsBack.StartAllBack", "scope": "machine" },
+      "install": {
+        "type": "winget",
+        "packageId": "StartIsBack.StartAllBack",
+        "scope": "machine",
+        "officialUrl": "https://www.startallback.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "steam",
       "name": "Steam",
       "category": "Gaming",
       "description": "PC gaming platform.",
-      "install": { "type": "winget", "packageId": "Valve.Steam" },
+      "install": {
+        "type": "winget",
+        "packageId": "Valve.Steam",
+        "officialUrl": "https://store.steampowered.com/about/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "tailscale",
       "name": "Tailscale",
       "category": "Network",
       "description": "Mesh VPN.",
-      "install": { "type": "winget", "packageId": "Tailscale.Tailscale" },
+      "install": {
+        "type": "winget",
+        "packageId": "Tailscale.Tailscale",
+        "officialUrl": "https://tailscale.com/download/windows"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "stretchly",
       "name": "Stretchly",
       "category": "Health",
       "description": "Break reminder app.",
-      "install": { "type": "winget", "packageId": "Stretchly.Stretchly" },
+      "install": {
+        "type": "winget",
+        "packageId": "Stretchly.Stretchly",
+        "officialUrl": "https://hovancik.net/stretchly/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Stretchly" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Stretchly"
+        ]
+      }
     },
     {
       "id": "telegram",
       "name": "Telegram Desktop",
       "category": "Communication",
       "description": "Telegram desktop client.",
-      "install": { "type": "winget", "packageId": "Telegram.TelegramDesktop" },
+      "install": {
+        "type": "winget",
+        "packageId": "Telegram.TelegramDesktop",
+        "officialUrl": "https://desktop.telegram.org/"
+      },
       "status": "ready",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "twinkle-tray",
       "name": "Twinkle Tray",
       "category": "Utilities",
       "description": "Monitor brightness control.",
-      "install": { "type": "winget", "packageId": "xanderfrangos.twinkletray" },
+      "install": {
+        "type": "winget",
+        "packageId": "xanderfrangos.twinkletray",
+        "officialUrl": "https://twinkletray.com/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%LocalAppData%\\Packages\\XanderFrangos.TwinkleTray_*" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%LocalAppData%\\Packages\\XanderFrangos.TwinkleTray_*"
+        ]
+      }
     },
     {
       "id": "unity-hub",
       "name": "Unity Hub",
       "category": "Developer",
       "description": "Unity project and editor manager.",
-      "install": { "type": "winget", "packageId": "Unity.UnityHub" },
+      "install": {
+        "type": "winget",
+        "packageId": "Unity.UnityHub",
+        "officialUrl": "https://unity.com/download"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\UnityHub" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\UnityHub"
+        ]
+      }
     },
     {
       "id": "unigetui",
       "name": "UniGetUI",
       "category": "Utilities",
       "description": "GUI for winget, Chocolatey, Scoop, and other package managers.",
-      "install": { "type": "winget", "packageId": "MartiCliment.UniGetUI" },
+      "install": {
+        "type": "winget",
+        "packageId": "MartiCliment.UniGetUI",
+        "officialUrl": "https://www.marticliment.com/unigetui/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "vlc",
       "name": "VLC media player",
       "category": "Media",
       "description": "Media player.",
-      "install": { "type": "winget", "packageId": "VideoLAN.VLC" },
+      "install": {
+        "type": "winget",
+        "packageId": "VideoLAN.VLC",
+        "officialUrl": "https://www.videolan.org/vlc/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\vlc" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\vlc"
+        ]
+      }
     },
     {
       "id": "vmware-workstation",
       "name": "VMware Workstation",
       "category": "Virtualization",
       "description": "Desktop virtualization. Keep manual/offline because editions and licensing vary. Current download source is a TechSpot page, not a direct installer.",
-      "install": { "type": "manual", "url": "https://www.techspot.com/downloads/189-vmware-workstation-for-windows.html" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.techspot.com/downloads/189-vmware-workstation-for-windows.html",
+        "officialUrl": "https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [ "%AppData%\\VMware", "%UserProfile%\\Documents\\Virtual Machines" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\VMware",
+          "%UserProfile%\\Documents\\Virtual Machines"
+        ]
+      }
     },
     {
       "id": "firefox",
       "name": "Firefox",
       "category": "Browser",
       "description": "Mozilla web browser.",
-      "install": { "type": "winget", "packageId": "Mozilla.Firefox" },
+      "install": {
+        "type": "winget",
+        "packageId": "Mozilla.Firefox",
+        "officialUrl": "https://www.mozilla.org/firefox/new/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\Mozilla\\Firefox" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\Mozilla\\Firefox"
+        ]
+      }
     },
     {
       "id": "wechat",
       "name": "WeChat",
       "category": "Communication",
       "description": "WeChat desktop client.",
-      "install": { "type": "winget", "packageId": "Tencent.WeChat" },
+      "install": {
+        "type": "winget",
+        "packageId": "Tencent.WeChat",
+        "officialUrl": "https://www.wechat.com/"
+      },
       "status": "verify",
-      "config": { "backup": true, "paths": [ "%UserProfile%\\Documents\\WeChat Files" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%UserProfile%\\Documents\\WeChat Files"
+        ]
+      }
     },
     {
       "id": "winaero-tweaker",
       "name": "Winaero Tweaker",
       "category": "System",
       "description": "Windows tweaking utility.",
-      "install": { "type": "winget", "packageId": "Winaero.WinaeroTweaker" },
+      "install": {
+        "type": "winget",
+        "packageId": "Winaero.WinaeroTweaker",
+        "officialUrl": "https://winaero.com/winaero-tweaker/"
+      },
       "status": "verify",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "whatsapp",
       "name": "WhatsApp",
       "category": "Communication",
       "description": "WhatsApp desktop client. Source should be confirmed because Store and direct builds differ.",
-      "install": { "type": "manual", "url": "https://www.whatsapp.com/download" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.whatsapp.com/download",
+        "officialUrl": "https://www.whatsapp.com/download"
+      },
       "status": "manual",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     },
     {
       "id": "winmerge",
       "name": "WinMerge",
       "category": "Utilities",
       "description": "File and folder comparison.",
-      "install": { "type": "winget", "packageId": "WinMerge.WinMerge" },
+      "install": {
+        "type": "winget",
+        "packageId": "WinMerge.WinMerge",
+        "officialUrl": "https://winmerge.org/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "xnviewmp",
       "name": "XnView MP",
       "category": "Media",
       "description": "Image browser and converter.",
-      "install": { "type": "winget", "packageId": "XnSoft.XnViewMP" },
+      "install": {
+        "type": "winget",
+        "packageId": "XnSoft.XnViewMP",
+        "officialUrl": "https://www.xnview.com/en/xnviewmp/"
+      },
       "status": "ready",
-      "config": { "backup": true, "paths": [ "%AppData%\\XnViewMP" ] }
+      "config": {
+        "backup": true,
+        "paths": [
+          "%AppData%\\XnViewMP"
+        ]
+      }
     },
     {
       "id": "eudic",
       "name": "欧路词典 Eudic",
       "category": "Learning",
       "description": "Dictionary and language learning app. Package/source needs confirmation.",
-      "install": { "type": "manual", "url": "https://www.eudic.net/" },
+      "install": {
+        "type": "manual",
+        "url": "https://www.eudic.net/",
+        "officialUrl": "https://www.eudic.net/"
+      },
       "status": "manual",
-      "config": { "backup": true, "paths": [] }
+      "config": {
+        "backup": true,
+        "paths": []
+      }
     },
     {
       "id": "tencent-meeting",
       "name": "腾讯会议",
       "category": "Communication",
       "description": "Tencent Meeting desktop client.",
-      "install": { "type": "winget", "packageId": "Tencent.TencentMeeting" },
+      "install": {
+        "type": "winget",
+        "packageId": "Tencent.TencentMeeting",
+        "officialUrl": "https://meeting.tencent.com/"
+      },
       "status": "verify",
-      "config": { "backup": false, "paths": [] }
+      "config": {
+        "backup": false,
+        "paths": []
+      }
     }
   ]
 }
