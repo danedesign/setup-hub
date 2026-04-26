@@ -61,7 +61,8 @@ try {
     if ($CreateStartMenuShortcut -or $DefaultCreateStartMenuShortcut) {
         $shortcutScript = Join-Path $InstallDir "scripts\Install-StartMenuShortcut.ps1"
         if (Test-Path -LiteralPath $shortcutScript) {
-            & $shortcutScript
+            $powershellPath = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+            & $powershellPath -NoProfile -ExecutionPolicy Bypass -File $shortcutScript
         }
     }
 
@@ -71,7 +72,8 @@ try {
     }
 
     Write-Host "Starting Setup Hub..."
-    & $startScript
+    $powershellPath = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+    Start-Process -FilePath $powershellPath -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "`"$startScript`"")
 }
 finally {
     if (Test-Path -LiteralPath $tempRoot) {

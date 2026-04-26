@@ -52,7 +52,7 @@ $DefaultRepo = "danedesign/setup-hub"
 Fast IEX pattern:
 
 ```powershell
-irm https://raw.githubusercontent.com/danedesign/setup-hub/master/scripts/Bootstrap-SetupHub.ps1 | iex
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/danedesign/setup-hub/master/scripts/Bootstrap-SetupHub.ps1 | iex"
 ```
 
 Safer inspectable pattern:
