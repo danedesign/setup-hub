@@ -387,6 +387,19 @@ function Append-InstallLog([string]$message) {
     [System.Windows.Forms.Application]::DoEvents()
 }
 
+function Set-InstallUiBusy([bool]$isBusy) {
+    $appList.IsEnabled = -not $isBusy
+    $searchBox.IsEnabled = -not $isBusy
+    $categoryBox.IsEnabled = -not $isBusy
+    $installStateBox.IsEnabled = -not $isBusy
+    $selectReadyButton.IsEnabled = -not $isBusy
+    $clearButton.IsEnabled = -not $isBusy
+    $exportButton.IsEnabled = -not $isBusy
+    $dryRunButton.IsEnabled = -not $isBusy
+    $installButton.IsEnabled = -not $isBusy
+    $checkInstalledButton.IsEnabled = -not $isBusy
+}
+
 function Get-InstallActionText($item) {
     if ($item.Type -eq "winget") {
         $command = "winget install --id {0} --exact --accept-package-agreements --accept-source-agreements" -f $item.Raw.install.packageId
@@ -563,8 +576,7 @@ function Complete-InstallQueue([bool]$failed, [string]$message) {
     $script:CurrentInstallLogLength = 0
     $script:CurrentQueueItem = $null
 
-    $installButton.IsEnabled = $true
-    $checkInstalledButton.IsEnabled = $true
+    Set-InstallUiBusy $false
     Update-Summary
 
     if ($failed) {
@@ -709,8 +721,7 @@ $installButton.Add_Click({
         $result = [System.Windows.MessageBox]::Show($message, "Setup Hub", "YesNo", "Question")
         if ($result -ne "Yes") { return }
 
-        $installButton.IsEnabled = $false
-        $checkInstalledButton.IsEnabled = $false
+        Set-InstallUiBusy $true
         $queueItems.Clear()
         $installLogBox.Clear()
         $installProgress.Value = 0
@@ -736,8 +747,7 @@ $installButton.Add_Click({
         $errorPath = Join-Path $logDir ("install-error-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
         (($installLogBox.Text + [Environment]::NewLine + ($_ | Out-String))) | Set-Content -LiteralPath $errorPath -Encoding UTF8
         [System.Windows.MessageBox]::Show(("Install failed. Error log saved to:`n{0}`n`n{1}" -f $errorPath, $_.Exception.Message), "Setup Hub") | Out-Null
-        $installButton.IsEnabled = $true
-        $checkInstalledButton.IsEnabled = $true
+        Set-InstallUiBusy $false
         Update-Summary
     }
 })
