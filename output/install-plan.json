@@ -1,0 +1,8 @@
+﻿{
+    "Id":  "icloud-apple",
+    "Name":  "iCloud",
+    "Category":  "Apple",
+    "Type":  "manual",
+    "Status":  "manual",
+    "PackageId":  null
+}
