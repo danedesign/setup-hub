@@ -109,6 +109,9 @@ If the IEX command returns 404 or `Invoke-WebRequest : 404`, check:
 - Do not remove user changes.
 - The user likes the idea of a polished but transparent tool, not necessarily a compiled EXE yet.
 - The current preferred distribution method is GitHub plus one-line bootstrap.
+- The user plans a dual-Windows setup: one clean/stable work system and one lab/tinkering system. User data should be structured on a separate data drive, with separate work/lab user folders and shared/project/portable-app areas instead of mixing apps into Documents.
+- For the stable work Windows system, prefer conservative, reversible setup/optimization scripts. Broad debloat tools such as Chris Titus Tech WinUtil can be useful selectively, but should not be applied blindly on the work system.
+- Junction/Symlink management should be a separate standalone project/tool, not part of Setup Hub.
 
 ## Known Local Issue
 
